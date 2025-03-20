@@ -4,50 +4,54 @@
     <title>Hoodie Order Form</title>
     <script>
         function addRow() {
-    let table = document.getElementById("orderTable");
-    let row = table.insertRow(-1);
+            let table = document.getElementById("orderTable");
+            let row = table.insertRow(-1);
 
-    row.innerHTML = `
-        <td>
-            <select name="size[]">
-                <option value="S">S</option>
-                <option value="M">M</option>
-                <option value="L">L</option>
-                <option value="XL">XL</option>
-                <option value="2XL">2XL</option>
-                <option value="3XL">3XL</option>
-                <option value="5XL">5XL</option>
-            </select>
-        </td>
-        <td><input type="number" name="qty[]" min="1" required></td>
-        <td><input type="text" name="name[]" required></td>
-        <td><button type="button" onclick="removeRow(this)">Remove</button></td>
-    `;
-}
-
+            row.innerHTML = `
+                <td>
+                    <select name="size[]">
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                        <option value="2XL">2XL</option>
+                        <option value="3XL">3XL</option>
+                        <option value="5XL">5XL</option>
+                    </select>
+                </td>
+                <td><input type="number" name="qty[]" min="1" required></td>
+                <td><input type="text" name="name[]" required></td>
+                <td><button type="button" onclick="removeRow(this)">Remove</button></td>
+            `;
+        }
 
         function removeRow(button) {
             let row = button.parentNode.parentNode;
             row.parentNode.removeChild(row);
         }
 
-function submitForm(event) {
-    event.preventDefault(); // Prevent default form submission
+        function submitForm(event) {
+            event.preventDefault(); // Prevent default form submission
 
-    let form = document.getElementById("orderForm");
-    let rows = [];
+            let form = document.getElementById("orderForm");
+            let rows = [];
 
-    let sizes = document.querySelectorAll('[name="size[]"]');
-    let qtys = document.querySelectorAll('[name="qty[]"]');
-    let names = document.querySelectorAll('[name="name[]"]');
+            let sizes = document.querySelectorAll('[name="size[]"]');
+            let qtys = document.querySelectorAll('[name="qty[]"]');
+            let names = document.querySelectorAll('[name="name[]"]');
 
-    for (let i = 0; i < sizes.length; i++) {
-        rows.push({
-            size: sizes[i].value,
-            qty: qtys[i].value,
-            name: names[i].value
-        });
-    }
+            if (sizes.length === 0) {
+                alert("Please add at least one order.");
+                return;
+            }
+
+            for (let i = 0; i < sizes.length; i++) {
+                rows.push({
+                    size: sizes[i].value,
+                    qty: qtys[i].value,
+                    name: names[i].value
+                });
+            }
 
             let formData = {
                 orderName: document.getElementById("orderName").value,
@@ -63,13 +67,21 @@ function submitForm(event) {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData)
             })
-            .then(response => response.text())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.text();
+            })
             .then(data => {
                 console.log("Response:", data); // Debugging Log
                 alert("Order submitted successfully!");
                 form.reset();
             })
-            .catch(error => console.error("Error:", error));
+            .catch(error => {
+                console.error("Error:", error);
+                alert("There was an issue submitting your order. Please try again.");
+            });
         }
     </script>
 </head>
@@ -116,4 +128,3 @@ function submitForm(event) {
     </form>
 </body>
 </html>
-
