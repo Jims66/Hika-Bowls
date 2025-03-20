@@ -29,20 +29,44 @@
             row.parentNode.removeChild(row);
         }
 
-        function submitForm(event) {
-            event.preventDefault(); // Prevent default form submission
-            let formData = new FormData(document.getElementById("orderForm"));
-            fetch("https://script.google.com/macros/s/AKfycbw6FFPLokhQKwkw1SM8PNTxFdMob7-XsPqgm_EoH95_Mhht3vIkQ-OudUz0hbpRS_qL/exec", {
-                method: "POST",
-                body: formData
-            })
-            .then(response => response.text())
-            .then(data => {
-                alert("Order submitted successfully!");
-                document.getElementById("orderForm").reset();
-            })
-            .catch(error => console.error("Error:", error));
-        }
+function submitForm(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    let form = document.getElementById("orderForm");
+    let rows = [];
+
+    let sizes = form.querySelectorAll('[name="size[]"]');
+    let qtys = form.querySelectorAll('[name="qty[]"]');
+    let names = form.querySelectorAll('[name="name[]"]');
+
+    for (let i = 0; i < sizes.length; i++) {
+        rows.push({
+            size: sizes[i].value,
+            qty: qtys[i].value,
+            name: names[i].value
+        });
+    }
+
+    let formData = {
+        orderName: document.getElementById("orderName").value,
+        orderEmail: document.getElementById("orderEmail").value,
+        rows: rows,
+        comments: document.getElementById("comments").value
+    };
+
+    fetch("https://script.google.com/macros/s/AKfycbw6FFPLokhQKwkw1SM8PNTxFdMob7-XsPqgm_EoH95_Mhht3vIkQ-OudUz0hbpRS_qL/exec", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.text())
+    .then(data => {
+        alert("Order submitted successfully!");
+        form.reset();
+    })
+    .catch(error => console.error("Error:", error));
+}
+
     </script>
 </head>
 <body>
