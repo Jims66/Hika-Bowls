@@ -31,23 +31,23 @@
             row.parentNode.removeChild(row);
         }
 
-        function submitForm(event) {
-            event.preventDefault(); // Prevent default form submission
+function submitForm(event) {
+    event.preventDefault(); // Prevent default form submission
 
-            let form = document.getElementById("orderForm");
-            let rows = [];
+    let form = document.getElementById("orderForm");
+    let rows = [];
 
-            let sizes = document.querySelectorAll('[name="size[]"]');
-            let qtys = document.querySelectorAll('[name="qty[]"]');
-            let names = document.querySelectorAll('[name="name[]"]');
+    let sizes = document.querySelectorAll('[name="size[]"]');
+    let qtys = document.querySelectorAll('[name="qty[]"]');
+    let names = document.querySelectorAll('[name="name[]"]');
 
-            for (let i = 0; i < sizes.length; i++) {
-                rows.push({
-                    size: sizes[i].value,
-                    qty: qtys[i].value,
-                    name: names[i].value
-                });
-            }
+    for (let i = 0; i < sizes.length; i++) {
+        rows.push({
+            size: sizes[i].value,
+            qty: qtys[i].value,
+            name: names[i].value
+        });
+    }
 
             let formData = {
                 orderName: document.getElementById("orderName").value,
