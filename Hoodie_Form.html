@@ -1,36 +1,90 @@
-function doPost(e) {
-    if (!e || !e.postData) {
-        return ContentService.createTextOutput("No data received").setMimeType(ContentService.MimeType.TEXT);
-    }
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hoodie Order Form</title>
+    <script>
+        function addRow() {
+            let table = document.getElementById("orderTable");
+            let row = table.insertRow(-1);
+            row.innerHTML = `
+                <td>
+                    <select name="size[]">
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                        <option value="2XL">2XL</option>
+                        <option value="3XL">3XL</option>
+                        <option value="5XL">5XL</option>
+                    </select>
+                </td>
+                <td><input type="number" name="qty[]" min="1" required></td>
+                <td><input type="text" name="name[]" required></td>
+                <td><button type="button" onclick="removeRow(this)">Remove</button></td>
+            `;
+        }
 
-    var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Hoodie Orders");
+        function removeRow(button) {
+            let row = button.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+        }
 
-    // Parse the incoming JSON data
-    var data = JSON.parse(e.postData.contents);
-
-    var name = data.orderName || "";
-    var email = data.orderEmail || "";
-    var comments = data.comments || "";
-    var rows = data.rows || [];
-
-    // Prepare the data for Google Sheets
-    var sheetRows = [];
-    for (var i = 0; i < rows.length; i++) {
-        sheetRows.push([
-            name,                 // User's name (same for all rows)
-            email,                // User's email (same for all rows)
-            rows[i].size || "",   // Hoodie size
-            rows[i].qty || "",    // Quantity
-            rows[i].name || "",   // Name on hoodie
-            comments || "",       // Comments
-            new Date()            // Timestamp
-        ]);
-    }
-
-    // Append all rows at once to Google Sheets
-    if (sheetRows.length > 0) {
-        sheet.getRange(sheet.getLastRow() + 1, 1, sheetRows.length, sheetRows[0].length).setValues(sheetRows);
-    }
-
-    return ContentService.createTextOutput("Success").setMimeType(ContentService.MimeType.TEXT);
-}
+        function submitForm(event) {
+            event.preventDefault(); // Prevent default form submission
+            let formData = new FormData(document.getElementById("orderForm"));
+            fetch("https://script.google.com/macros/s/AKfycbw6FFPLokhQKwkw1SM8PNTxFdMob7-XsPqgm_EoH95_Mhht3vIkQ-OudUz0hbpRS_qL/exec", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert("Order submitted successfully!");
+                document.getElementById("orderForm").reset();
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    </script>
+</head>
+<body>
+    <h2>Hoodie Order Form</h2>
+    <img src="https://drive.google.com/uc?export=view&id=1-T57SPNG6jc1ZZ1lutacbMG_nUsk6fxr" alt="Hoodie Image" width="400">
+    <form id="orderForm" onsubmit="submitForm(event)">
+        <label for="orderName">Your Name:</label>
+        <input type="text" id="orderName" name="orderName" required>
+        <br>
+        <label for="orderEmail">Your Email:</label>
+        <input type="email" id="orderEmail" name="orderEmail" required>
+        <br><br>
+        <table id="orderTable">
+            <tr>
+                <th>Size</th>
+                <th>Quantity</th>
+                <th>Name on Hoodie</th>
+                <th>Action</th>
+            </tr>
+            <tr>
+                <td>
+                    <select name="size[]">
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                        <option value="2XL">2XL</option>
+                        <option value="3XL">3XL</option>
+                        <option value="5XL">5XL</option>
+                    </select>
+                </td>
+                <td><input type="number" name="qty[]" min="1" required></td>
+                <td><input type="text" name="name[]" required></td>
+                <td><button type="button" onclick="addRow()">Add Row</button></td>
+            </tr>
+        </table>
+        <br>
+        <label for="comments">Additional Comments:</label>
+        <br>
+        <textarea name="comments" id="comments" rows="4" cols="50"></textarea>
+        <br>
+        <input type="submit" value="Submit Order">
+    </form>
+</body>
+</html>
