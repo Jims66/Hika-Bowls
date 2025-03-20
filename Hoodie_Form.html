@@ -1,55 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Hoodie Order Form</title>
-</head>
-<body>
-    <h2>Hoodie Order Form</h2>
-    <img src="https://github.com/Jims66/Hika-Bowls/blob/main/2025-03-20%2010_05_46-HIKURANGI-bowls-OFF-FIELD-HOODIE.png" alt="Hoodie Image" width="400">
-
-    <form id="orderForm">
-        <label for="orderName">Your Name:</label>
-        <input type="text" id="orderName" name="orderName" required>
-        <br>
-        <label for="orderEmail">Your Email:</label>
-        <input type="email" id="orderEmail" name="orderEmail" required>
-        <br><br>
-        
-        <table id="orderTable">
-            <tr>
-                <th>Size</th>
-                <th>Quantity</th>
-                <th>Name on Hoodie</th>
-                <th>Action</th>
-            </tr>
-            <tr>
-                <td>
-                    <select name="size[]">
-                        <option value="S">S</option>
-                        <option value="M">M</option>
-                        <option value="L">L</option>
-                        <option value="XL">XL</option>
-                        <option value="2XL">2XL</option>
-                        <option value="3XL">3XL</option>
-                        <option value="5XL">5XL</option>
-                    </select>
-                </td>
-                <td><input type="number" name="qty[]" min="1" required></td>
-                <td><input type="text" name="name[]" required></td>
-                <td><button type="button" onclick="removeRow(this)">Remove</button></td>
-            </tr>
-        </table>
-        <br>
-        <button type="button" onclick="addRow()">Add Row</button>
-        <br><br>
-
-        <label for="comments">Additional Comments:</label>
-        <br>
-        <textarea name="comments" id="comments" rows="4" cols="50"></textarea>
-        <br><br>
-        <input type="submit" value="Submit Order">
-    </form>
-
+    <title>Order Form</title>
     <script>
         function addRow() {
             let table = document.getElementById("orderTable");
@@ -61,9 +13,6 @@
                         <option value="M">M</option>
                         <option value="L">L</option>
                         <option value="XL">XL</option>
-                        <option value="2XL">2XL</option>
-                        <option value="3XL">3XL</option>
-                        <option value="5XL">5XL</option>
                     </select>
                 </td>
                 <td><input type="number" name="qty[]" min="1" required></td>
@@ -76,67 +25,36 @@
             let row = button.parentNode.parentNode;
             row.parentNode.removeChild(row);
         }
-
-        function submitForm(event) {
-    event.preventDefault(); // Prevent default form submission
-
-    let form = document.getElementById("orderForm");
-    let sizes = document.querySelectorAll('[name="size[]"]');
-    let qtys = document.querySelectorAll('[name="qty[]"]');
-    let names = document.querySelectorAll('[name="name[]"]');
-
-    let rows = [];
-
-    for (let i = 0; i < sizes.length; i++) {
-        if (qtys[i].value && names[i].value) {
-            rows.push({
-                size: sizes[i].value,
-                qty: qtys[i].value,
-                name: names[i].value
-            });
-        }
-    }
-
-    if (rows.length === 0) {
-        alert("Please add at least one valid order.");
-        return;
-    }
-
-    let formData = {
-        orderName: document.getElementById("orderName").value,
-        orderEmail: document.getElementById("orderEmail").value,
-        rows: rows,
-        comments: document.getElementById("comments").value
-    };
-
-    console.log("✅ Submitting Data:", formData);
-
-    fetch("https://script.google.com/macros/s/AKfycbw6FFPLokhQKwkw1SM8PNTxFdMob7-XsPqgm_EoH95_Mhht3vIkQ-OudUz0hbpRS_qL/exec", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData)
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log("✅ Response from Server:", data);
-        if (data.status === "Success") {
-            alert("Order submitted successfully!");
-            form.reset();
-        } else {
-            alert("Error: " + data.message);
-        }
-    })
-    .catch(error => {
-        console.error("❌ Fetch Error:", error);
-        alert("There was an issue submitting your order. Check console for details.");
-    });
-}
-        document.getElementById("orderForm").addEventListener("submit", submitForm);
     </script>
+</head>
+<body>
+
+    <h2>Shirt Order Form</h2>
+    <form action="YOUR_SCRIPT_URL_HERE" method="post">
+        <table id="orderTable">
+            <tr>
+                <th>Size</th>
+                <th>Quantity</th>
+                <th>Name on Shirt</th>
+                <th>Action</th>
+            </tr>
+            <tr>
+                <td>
+                    <select name="size[]">
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                    </select>
+                </td>
+                <td><input type="number" name="qty[]" min="1" required></td>
+                <td><input type="text" name="name[]" required></td>
+                <td><button type="button" onclick="addRow()">Add Row</button></td>
+            </tr>
+        </table>
+        <br>
+        <input type="submit" value="Submit Order">
+    </form>
+
 </body>
 </html>
