@@ -4,25 +4,27 @@
     <title>Hoodie Order Form</title>
     <script>
         function addRow() {
-            let table = document.getElementById("orderTable");
-            let row = table.insertRow(-1);
-            row.innerHTML = `
-                <td>
-                    <select name="size[]">
-                        <option value="S">S</option>
-                        <option value="M">M</option>
-                        <option value="L">L</option>
-                        <option value="XL">XL</option>
-                        <option value="2XL">2XL</option>
-                        <option value="3XL">3XL</option>
-                        <option value="5XL">5XL</option>
-                    </select>
-                </td>
-                <td><input type="number" name="qty[]" min="1" required></td>
-                <td><input type="text" name="name[]" required></td>
-                <td><button type="button" onclick="removeRow(this)">Remove</button></td>
-            `;
-        }
+    let table = document.getElementById("orderTable");
+    let row = table.insertRow(-1);
+
+    row.innerHTML = `
+        <td>
+            <select name="size[]">
+                <option value="S">S</option>
+                <option value="M">M</option>
+                <option value="L">L</option>
+                <option value="XL">XL</option>
+                <option value="2XL">2XL</option>
+                <option value="3XL">3XL</option>
+                <option value="5XL">5XL</option>
+            </select>
+        </td>
+        <td><input type="number" name="qty[]" min="1" required></td>
+        <td><input type="text" name="name[]" required></td>
+        <td><button type="button" onclick="removeRow(this)">Remove</button></td>
+    `;
+}
+
 
         function removeRow(button) {
             let row = button.parentNode.parentNode;
